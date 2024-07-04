@@ -42,10 +42,6 @@ data_to_load = pd.read_excel(os.path.join(path, config["CONFIG"]["excel_sheet_na
 
 # [BEGIN Query Ids and Apply to Data]
 print("Querying required IDs")
-# Program_Term_Enrollment__c
-#ProgramTermEnrollmentIDs = sql_where_convert(data_to_load["ProgramEnrollmentID"]) 
-#program_enrollments = soql_to_df(f"SELECT Id, Name FROM hed__Program_Enrollment__c WHERE Name IN ({ProgramTermEnrollmentIDs})", ["Program_Enrollment__c", "Name"])
-#data_to_load = data_to_load.merge(program_enrollments, left_on='ProgramEnrollmentID', right_on= "Name", how='left').drop(columns="Name")
 
 # hed__Term__c
 target_terms = sql_where_convert(data_to_load["Term"])
@@ -96,7 +92,7 @@ for index, row in data_to_load.iterrows():
 # selecting rows based on condition 
 df_success = data_to_load[data_to_load['status'] == "Success"] 
 df_fail = data_to_load[data_to_load['status'] != "Success"]
-df_success.to_excel(os.path.join(path, "ProgramTermEnrollmentUpdates_Success.xlsx"), index=False)
-df_fail.to_excel(os.path.join(path, "ProgramTermEnrollmentUpdates_FAIL.xlsx"), index=False)
-
-# Purge Input File
+if not df_success.empty:
+    df_success.to_excel(os.path.join(path, "ProgramTermEnrollmentUpdates_Success.xlsx"), index=False)
+if not df_fail.empty:
+    df_fail.to_excel(os.path.join(path, "ProgramTermEnrollmentUpdates_FAIL.xlsx"), index=False)
