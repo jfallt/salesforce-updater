@@ -43,9 +43,9 @@ data_to_load = pd.read_excel(os.path.join(path, config["CONFIG"]["excel_sheet_na
 # [BEGIN Query Ids and Apply to Data]
 print("Querying required IDs")
 # Program_Term_Enrollment__c
-ProgramTermEnrollmentIDs = sql_where_convert(data_to_load["ProgramEnrollmentID"]) 
-program_enrollments = soql_to_df(f"SELECT Id, Name FROM hed__Program_Enrollment__c WHERE Name IN ({ProgramTermEnrollmentIDs})", ["Program_Enrollment__c", "Name"])
-data_to_load = data_to_load.merge(program_enrollments, left_on='ProgramEnrollmentID', right_on= "Name", how='left').drop(columns="Name")
+#ProgramTermEnrollmentIDs = sql_where_convert(data_to_load["ProgramEnrollmentID"]) 
+#program_enrollments = soql_to_df(f"SELECT Id, Name FROM hed__Program_Enrollment__c WHERE Name IN ({ProgramTermEnrollmentIDs})", ["Program_Enrollment__c", "Name"])
+#data_to_load = data_to_load.merge(program_enrollments, left_on='ProgramEnrollmentID', right_on= "Name", how='left').drop(columns="Name")
 
 # hed__Term__c
 target_terms = sql_where_convert(data_to_load["Term"])
@@ -54,9 +54,8 @@ data_to_load = data_to_load.merge(terms, left_on='Term', right_on= "Name", how='
 
 # Students (Contact)
 student_emails = sql_where_convert(data_to_load["Email"])
-students = sf.query_all(format_soql("SELECT id, email FROM Contact"))
-terms = soql_to_df(f"SELECT Id, email FROM Contact WHERE email IN ({student_emails})", ["Student__c", "email_match"])
-data_to_load = data_to_load.merge(terms, left_on='Email', right_on= "email_match", how='left').drop(columns="email_match")
+students = soql_to_df(f"SELECT Id, Active_Program_Enrollment__c, email FROM Contact WHERE email IN ({student_emails})", ["Student__c", "Program_Enrollment__c", "email_match"])
+data_to_load = data_to_load.merge(students, left_on='Email', right_on= "email_match", how='left').drop(columns="email_match")
 data_to_load["status"] = ""
 print("IDs applied to data")
 # [END Query Ids and Apply to Data]
