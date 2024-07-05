@@ -7,6 +7,9 @@ import os
 
 # Config and Auth
 def get_settings():
+    """
+    Loads config data from settings.yaml
+    """
     full_file_path = Path(__file__).parent.joinpath("settings.yaml")
     with open(full_file_path) as settings:
         settings_data = yaml.load(settings, Loader=yaml.Loader)
@@ -32,6 +35,9 @@ def sql_where_convert(df_column):
 
 
 def soql_to_df(query, column_aliases=None):
+    """
+    Converts the output of sf.query into a usable dataframe
+    """
     #print(query)
     df = pd.DataFrame(pd.DataFrame(sf.query(format_soql(query)))["records"].to_list())
 
@@ -43,6 +49,9 @@ def soql_to_df(query, column_aliases=None):
 
 
 def load_input_file(file_name):
+    """
+    Helper function to load input excel sheet
+    """
     return pd.read_excel(os.path.join(path, f"{config['CONFIG'][file_name]}.xlsx"))
 
 
@@ -61,6 +70,7 @@ def get_contact_id(input_data: pd.DataFrame):
     ).drop(columns="email_match")
 
 def write_results(input_file: str, data_load: pd.DataFrame):
+    """Write detailed results to excel sheets and log results"""
     df_success = data_load[data_load["status"] == "Success"]
     df_fail = data_load[data_load["status"] != "Success"]
     if not df_success.empty:
@@ -77,4 +87,5 @@ def write_results(input_file: str, data_load: pd.DataFrame):
     print("Update Summary")
     print("--------------------------")
     print(f"{len(df_success.index)} / {len(data_load.index)} records successfully updated!")
-    print(f"{len(df_fail.index)} / {len(data_load.index)} records failed to update")
+    if len(df_fail.index) > 0:
+        print(f"{len(df_fail.index)} / {len(data_load.index)} records failed to update :(")
