@@ -2,9 +2,10 @@ from merrimack import sql_where_convert, soql_to_df, load_input_file, get_contac
 
 # Load Data
 data_to_load = load_input_file("program_term_enrollment_updates")
+print(f"Updating program enrollments for {len(data_to_load.index)} student(s)\n")
 
 # [BEGIN Query Ids and Apply to Data]
-print("Querying required IDs")
+print("Querying required IDs\n")
 
 # hed__Term__c
 target_terms = sql_where_convert(data_to_load["Term"])
@@ -18,7 +19,7 @@ data_to_load = data_to_load.merge(
 
 # Students (Contact)
 data_to_load = get_contact_id(data_to_load)
-print("IDs applied to data")
+print("\nIDs applied to data")
 # [END Query Ids and Apply to Data]
 
 
@@ -49,7 +50,7 @@ for index, row in data_to_load.iterrows():
     )
     if not record_check.empty:
         print("A record already exists, skipping")
-        data_to_load.loc[index, "status"] = "Record already exists in Salesforce"
+        data_to_load.loc[index, "status"] = "Success"
     else:
         response = sf.Program_Term_Enrollment__c.create(data)
         if response["success"]:

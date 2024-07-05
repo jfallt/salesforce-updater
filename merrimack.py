@@ -32,7 +32,7 @@ def sql_where_convert(df_column):
 
 
 def soql_to_df(query, column_aliases=None):
-    print(query)
+    #print(query)
     df = pd.DataFrame(pd.DataFrame(sf.query(format_soql(query)))["records"].to_list())
 
     if "attributes" in df:
@@ -73,3 +73,8 @@ def write_results(input_file: str, data_load: pd.DataFrame):
             os.path.join(path, f"{config['CONFIG'][input_file]}_FAIL.xlsx"),
             index=False,
         )
+    print("")
+    print("Update Summary")
+    print("--------------------------")
+    print(f"{len(df_success.index)} / {len(data_load.index)} records successfully updated!")
+    print(f"{len(df_fail.index)} / {len(data_load.index)} records failed to update")
