@@ -16,8 +16,9 @@ print("IDs applied to data\n")
 
 # Data Update
 data_to_load["status"] = ""
+print("Updating Data\n")
 for index, row in data_to_load.iterrows():
-    print(f"Updating {row['LastName']}, {row['FirstName']}")
+    print(row)
 
     # Payload for updated
     data = {

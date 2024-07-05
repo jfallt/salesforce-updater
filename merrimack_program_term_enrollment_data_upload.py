@@ -19,14 +19,15 @@ data_to_load = data_to_load.merge(
 
 # Students (Contact)
 data_to_load = get_contact_id(data_to_load)
-print("\nIDs applied to data")
+print("IDs applied to data")
 # [END Query Ids and Apply to Data]
 
 
 # Data Update
 data_to_load["status"] = ""
+print("Updating Data\n")
 for index, row in data_to_load.iterrows():
-    print(f"Updating {row['LastName']}, {row['FirstName']}")
+    print(row)
 
     # Payload for updated
     data = {
